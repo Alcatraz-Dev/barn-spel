@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audio:generate": "python3 scripts/generate/generate_audio.py",
+    "audio:test": "node -e \"const fs=require('fs'),p=require('path'); const d='public/audio/sv-SE'; const f=fs.readdirSync(d).filter(x=>x.endsWith('.wav')); console.log('Audio files:',f.length); f.forEach(x=>{const s=fs.statSync(p.join(d,x)).size; if(s<100)console.log('EMPTY:',x,s);}); console.log('All OK');\""
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",

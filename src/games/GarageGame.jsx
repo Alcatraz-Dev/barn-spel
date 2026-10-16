@@ -25,15 +25,19 @@ export default function GarageGame({ level, onCorrect, onWrong, speak, locked, q
   const [parked, setParked] = useState(false)
   const [carMoved, setCarMoved] = useState(false)
 
+  const byNum = level >= 4 && Math.random() > 0.5
+
   useEffect(() => {
     const g = garages[Math.floor(Math.random() * garages.length)]
     setGoal(g)
     setParked(false)
     setCarMoved(false)
-    speak("Kör den " + g.def + " bilen till det " + g.def + " garaget!")
-  }, [level, qIndex || 0, speak])
-
-  const byNum = level >= 4 && Math.random() > 0.5
+    if (byNum) {
+      speak("Bilen har nummer " + g.num + ". Kör till garage " + g.num + "!")
+    } else {
+      speak("Kör den " + g.def + " bilen till det " + g.def + " garaget!")
+    }
+  }, [level, qIndex || 0, byNum, speak])
 
   const handlePark = (g) => {
     if (locked || parked) return

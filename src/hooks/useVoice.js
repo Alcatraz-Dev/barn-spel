@@ -1,10 +1,6 @@
 import { useCallback, useRef } from "react"
 import { useAppStore } from "../store/useAppStore"
-
-// Only Bella from ElevenLabs — load from .env
-const ELEVEN_KEY = import.meta.env?.VITE_ELEVENLABS_API_KEY || "sk_f56aee03a6c8368126ee36ff9895548af69ee2d1181e9903"
-const ELEVEN_VOICE = import.meta.env?.VITE_ELEVENLABS_VOICE_ID || "EXAVITQu4vr4xnSDxMaL"
-const ELEVEN_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}`
+import { AUDIO_MAP } from "../lib/audio_map"
 
 export function useVoice() {
   const voiceOn = useAppStore(s => s.voiceOn)
@@ -14,7 +10,6 @@ export function useVoice() {
   const speakingRef = useRef(false)
   const audioCtxRef = useRef(null)
 
-  // Unlock audio context on first user gesture
   const warm = useCallback(() => {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext
@@ -36,45 +31,44 @@ export function useVoice() {
     }
   }, [])
 
+  const getFileName = (text) => {
+    const clean = (text || "").replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/\s+/g, " ").trim()
+    const lowerClean = clean.toLowerCase()
+    for (const [key, file] of Object.entries(AUDIO_MAP)) {
+      const lowKey = key.toLowerCase().replace("{name}", "").trim()
+      if (lowKey && (lowerClean.includes(lowKey) || lowKey.includes(lowerClean) || lowerClean === lowKey)) {
+        return file
+      }
+    }
+    return null
+  }
+
   const speak = useCallback(async (text) => {
     if (!voiceOn) return
+    stop() // prevent overlapping speech
     const id = ++idRef.current
     speakingRef.current = true
     const clean = (text || "").replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/\s+/g, " ").trim()
     if (!clean) { speakingRef.current = false; return }
 
-    try {
-      const res = await fetch(ELEVEN_URL, {
-        method: "POST",
-        headers: {
-          "xi-api-key": ELEVEN_KEY,
-          "Content-Type": "application/json",
-          "Accept": "audio/mpeg"
-        },
-        body: JSON.stringify({
-          text: clean,
-          model_id: "eleven_multilingual_v2",
-          voice_settings: { stability: 0.5, similarity_boost: 0.75, use_speaker_boost: true }
-        })
-      })
-      if (res.ok && id === idRef.current) {
-        const blob = await res.blob()
-        const url = URL.createObjectURL(blob)
-        const audio = new Audio(url)
+    const file = getFileName(clean)
+    if (file && id === idRef.current) {
+      try {
+        const audio = new Audio(`/audio/sv-SE/${file}.wav`)
         audioRef.current = audio
         audio.play().catch(() => {})
         audio.onended = () => {
-          URL.revokeObjectURL(url)
           if (audioRef.current === audio) audioRef.current = null
           speakingRef.current = false
         }
-      }
-    } catch (e) {}
-  }, [voiceOn])
+        audio.onerror = () => { speakingRef.current = false }
+      } catch (e) {}
+    }
+  }, [voiceOn, childName])
 
   const isSpeaking = () => speakingRef.current
 
   const welcome = useCallback(() => speak(`Välkommen ${childName}!`), [speak, childName])
 
-  return { speak, stop, warm, isSpeaking, voiceOn, key: ELEVEN_KEY, voiceId: ELEVEN_VOICE }
+  return { speak, stop, warm, isSpeaking, voiceOn, key: "piper-alma-sv", voiceId: "sv_SE-alma-medium" }
 }

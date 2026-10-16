@@ -4,7 +4,7 @@ import { useVoice } from "../hooks/useVoice"
 import { useAppStore } from "../store/useAppStore"
 
 export default function SplashScreen({ onDone }) {
-  const { speak, stop } = useVoice()
+  const { speak, stop, warm } = useVoice()
   const childName = useAppStore(s => s.childName)
   const [played, setPlayed] = useState(false)
 
@@ -15,7 +15,7 @@ export default function SplashScreen({ onDone }) {
   }, [])
 
   function handleStart() {
-    // Trigger ElevenLabs voice on click (browser allows after user gesture)
+    warm() // unlock AudioContext
     speak(`Välkommen ${childName}!`)
     setTimeout(() => {
       stop()

@@ -31,3 +31,7 @@ dist-ssr
 # Build output
 build
 out
+
+# Piper voice model files (large binary, regenerated locally)
+scripts/voice/*.onnx
+scripts/voice/*.onnx.json
