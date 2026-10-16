@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6c63ff;
+  --color-ink: #26324a;
+  --color-bg: #f4f7ff;
+  --color-green: #c9f3d6;
+  --color-yellow: #ffe99b;
+  --color-pink: #ffd8e8;
+  --color-blue: #cdeaff;
+  --color-peach: #ffe2c2;
+  --color-mint: #d4f1f4;
+  --color-lav: #e4ddff;
+  --color-sky: #d9f5ff;
+  --color-vio: #f3e4ff;
+  --color-honey: #fff0cb;
+}
+
+:root {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  touch-action: manipulation;
+  font-synthesis-weight: none;
+}
+
+body {
+  font-family: "Nunito", ui-rounded, "Arial Rounded MT Bold", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(1400px 900px at 50% -10%, #f8f9ff, #eaf6ff);
+  color: var(--color-ink);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2.5deg); }
+  75% { transform: rotate(2.5deg); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes drive-in {
+  from { transform: translateX(-70vw); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.wiggle { animation: wiggle 220ms ease-in-out 2; }
+.pop { animation: pop 280ms ease-out; }
+.drive-in { animation: drive-in 700ms cubic-bezier(.25,.8,.25,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

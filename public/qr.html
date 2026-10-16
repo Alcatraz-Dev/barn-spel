@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🦁 Djurkompisarna – QR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Inter:wght@400;600&display=swap');
+  * { box-sizing: border-box; }
+  body { font-family: 'Fredoka', system-ui, sans-serif; background: linear-gradient(180deg, #e6e8fa 0%, #f0f3ff 100%); color: #26324a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 24px; }
+  .card { background: #fff; border-radius: 36px; padding: 32px 28px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(108,99,255,0.12), 0 8px 0 rgba(220,226,244,0.9); }
+  h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 12px; color: #4d46c8; letter-spacing: -0.02em; }
+  .subtitle { font-size: 1.05rem; color: #4a5568; line-height: 1.55; margin: 0 0 28px; }
+  .qr-wrap { display: inline-block; padding: 10px; border-radius: 16px; background: #fff; border: 2px dashed #dde3fa; }
+  .url-pill { display: inline-block; margin: 18px auto 0; padding: 10px 14px; border-radius: 14px; background: #f3f5ff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem; color: #4a5568; letter-spacing: 0.02em; word-break: break-all; max-width: 92vw; }
+  .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+  button, a.btn { font-family: inherit; font-weight: 700; padding: 12px 16px; border-radius: 16px; border: none; background: #f0f0ff; color: #4d46c8; text-decoration: none; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 0 rgba(77,70,200,0.1); transition: transform .05s ease; }
+  button:active, a.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(77,70,200,0.1); }
+  .btn-primary { background: #6c63ff; color: #fff; box-shadow: 0 4px 0 rgba(77,70,200,0.25); }
+  input { width: 100%; padding: 12px; border-radius: 14px; border: 2px solid #dde3fa; font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-top: 10px; color: #26324a; }
+  .status { margin-top: 14px; color: #3cc46b; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .tips { text-align: left; margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed #dde3fa; font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #3d426a; }
+  .tips ol { padding-left: 18px; margin: 8px 0; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="card">
+  <h1>🦁 Djurkompisarna</h1>
+  <p class="subtitle">Skanna koden med kameran på telefonen eller iPad för att öppna spelet.</p>
+
+  <div class="qr-wrap">
+    <div id="qrBox"></div>
+  </div>
+
+  <div class="url-pill" id="urlDisplay">https://min-son-spel.vercel.app/</div>
+
+  <div class="btn-row">
+    <button onclick="copyLink()">📋 Kopiera länk</button>
+    <button onclick="window.print()">🖨️ Skriv ut</button>
+    <a href="/" class="btn btn-primary">← Till spelet</a>
+  </div>
+
+  <p class="status">✅ Koden pekar på spelet och kan skannas.</p>
+
+  <div class="tips">
+    <strong>Länk som koden öppnar (ändra vid behov):</strong>
+    <input id="urlInput" value="https://min-son-spel.vercel.app/" oninput="updateQR(this.value)" />
+  </div>
+
+  <div class="tips">
+    <strong>Så fungerar det:</strong>
+    <ol>
+      <li>Rikta kameran mot koden och tryck på länken.</li>
+      <li>I Safari: Dela → Lägg till på hemskärmen.</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+  const baseUrl = (typeof window !== "undefined" && window.location.origin) ? window.location.origin + "/" : "https://min-son-spel.vercel.app/";
+  function initQR(text) {
+    document.getElementById("qrBox").innerHTML = "";
+    new QRCode(document.getElementById("qrBox"), { text: text, width: 240, height: 240, colorDark: "#26324a", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+    document.getElementById("urlDisplay").textContent = text;
+  }
+  function updateQR(v) { if (!v) return; initQR(v); }
+  function copyLink() { navigator.clipboard?.writeText(document.getElementById("urlInput").value); alert("Länk kopierad!"); }
+  initQR(baseUrl);
+  document.getElementById("urlInput").value = baseUrl;
+</script>
+</body>
+</html>
