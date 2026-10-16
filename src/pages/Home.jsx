@@ -29,7 +29,7 @@ export default function Home({ onStartGame, onOpenSettings, onOpenParent }) {
             <p className="text-sm sm:text-base text-slate-600">Lär och lek • för barn 4–6 år</p>
           </div>
         </div>
-        <HUD onOpenParent={onOpenParent} onOpenQR={() => setQrOpen(true)} />
+        <HUD onOpenSettings={onOpenSettings} onOpenParent={onOpenParent} onOpenQR={() => setQrOpen(true)} />
       </header>
 
       <section className="relative overflow-hidden rounded-[32px] px-5 sm:px-8 py-6 sm:py-8 mb-6 shadow-[0_8px_0_rgba(220,226,244,0.9)] bg-gradient-to-br from-sky/60 via-vio/60 to-honey/60">

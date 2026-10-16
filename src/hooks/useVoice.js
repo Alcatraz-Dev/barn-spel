@@ -1,9 +1,9 @@
 import { useCallback, useRef } from "react"
 import { useAppStore } from "../store/useAppStore"
 
-// Only Bella from ElevenLabs — no fallback
-const ELEVEN_KEY = "sk_f56aee03a6c8368126ee36ff9895548af69ee2d1181e9903"
-const ELEVEN_VOICE = "EXAVITQu4vr4xnSDxMaL"
+// Only Bella from ElevenLabs — load from .env
+const ELEVEN_KEY = import.meta.env?.VITE_ELEVENLABS_API_KEY || "sk_f56aee03a6c8368126ee36ff9895548af69ee2d1181e9903"
+const ELEVEN_VOICE = import.meta.env?.VITE_ELEVENLABS_VOICE_ID || "EXAVITQu4vr4xnSDxMaL"
 const ELEVEN_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}`
 
 export function useVoice() {
@@ -12,6 +12,20 @@ export function useVoice() {
   const idRef = useRef(0)
   const audioRef = useRef(null)
   const speakingRef = useRef(false)
+  const audioCtxRef = useRef(null)
+
+  // Unlock audio context on first user gesture
+  const warm = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext
+      if (AudioContext && !audioCtxRef.current) {
+        audioCtxRef.current = new AudioContext()
+        if (audioCtxRef.current.state === "suspended") {
+          audioCtxRef.current.resume()
+        }
+      }
+    } catch (e) {}
+  }, [])
 
   const stop = useCallback(() => {
     idRef.current++
@@ -56,12 +70,11 @@ export function useVoice() {
         }
       }
     } catch (e) {}
-    // No fallback — only Bella
   }, [voiceOn])
 
   const isSpeaking = () => speakingRef.current
 
   const welcome = useCallback(() => speak(`Välkommen ${childName}!`), [speak, childName])
 
-  return { speak, stop, welcome, isSpeaking, voiceOn, key: ELEVEN_KEY, voiceId: ELEVEN_VOICE }
+  return { speak, stop, warm, isSpeaking, voiceOn, key: ELEVEN_KEY, voiceId: ELEVEN_VOICE }
 }

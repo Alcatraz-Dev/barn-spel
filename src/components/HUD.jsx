@@ -12,6 +12,9 @@ export default function HUD({ onOpenSettings, onOpenParent, onOpenQR }) {
         {voiceOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
         {voiceOn ? "Röst på" : "Röst av"}
       </button>
+      <button onClick={onOpenSettings} className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 shadow-[0_4px_0_rgba(217,222,244,0.9)] text-base font-extrabold active:scale-[0.98]">
+        <Settings size={18}/>Inställningar
+      </button>
       <button onClick={onOpenParent} className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-2 shadow-[0_4px_0_rgba(217,222,244,0.9)] text-base font-extrabold active:scale-[0.98]">
         <UserRound size={18}/>Föräldrar
       </button>
